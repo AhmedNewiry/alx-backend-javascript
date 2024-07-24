@@ -3,7 +3,7 @@ getFullResponseFromAPI(success){
 		if (success){
 			resolve({status:200, body:'Success'})
 		}esle{
-			reject(throw new Error("The fake API is not working currently"))
+			reject(new Error("The fake API is not working currently"))
 		}
 	})
 }
