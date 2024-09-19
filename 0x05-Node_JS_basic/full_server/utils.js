@@ -1,8 +1,11 @@
 import fs from 'fs';
+import util from 'util';
+
+const readFile = util.promisify(fs.readFile);
 
 export async function readDatabase(filePath) {
   try {
-    const data = await fs.readFile(filePath, 'utf8');
+    const data = await readFile(filePath, 'utf8');
     const lines = data.trim().split('\n').filter(line => line.trim() !== '');
     const students = {};
 
