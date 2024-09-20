@@ -16,13 +16,14 @@ describe('sendPaymentRequestToApi', () => {
 
   it('should call calculateNumber with the correct arguments', () => {
     sendPaymentRequestToApi(100, 20);
-    expect(spy.calledOnce).to.be.true;
-    expect(spy.calledWith('SUM', 100, 20)).to.be.true;
+    expect(spy.calledOnce).to.be.true; // Check if the spy was called once
+    expect(spy.calledWith('SUM', 100, 20)).to.be.true; // Check if it was called with correct arguments
   });
 
   it('should log the correct total', () => {
-    const consoleLog = sinon.stub(console, 'log');
+    const consoleLog = sinon.stub(console, 'log'); // Stub console.log
     sendPaymentRequestToApi(100, 20);
-    expect(consoleLog.calledWith('The total is: 120')).to.be.true;
-    consoleLog.restore();
+    expect(consoleLog.calledWith('The total is: 120')).to.be.true; // Check the log output
+    consoleLog.restore(); // Restore console.log
+  });
 });
