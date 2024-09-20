@@ -4,7 +4,9 @@ const app = require('./api');
 
 let server;
 
-describe('Index page', () => {
+describe('API integration test', () => {
+  const API_URL = 'http://localhost:7865';
+
   before((done) => {
     server = app.listen(7865, () => {
       done();
@@ -17,16 +19,10 @@ describe('Index page', () => {
     });
   });
 
-  it('should return status code 200', (done) => {
-    request('http://localhost:7865', (error, response, body) => {
-      expect(response.statusCode).to.equal(200);
-      done();
-    });
-  });
-
-  it('should return the correct message', (done) => {
-    request('http://localhost:7865', (error, response, body) => {
-      expect(body).to.equal('Welcome to the payment system');
+  it('GET / returns correct response', (done) => {
+    request.get(`${API_URL}/`, (_err, res, body) => {
+      expect(res.statusCode).to.be.equal(200);
+      expect(body).to.be.equal('Welcome to the payment system');
       done();
     });
   });
