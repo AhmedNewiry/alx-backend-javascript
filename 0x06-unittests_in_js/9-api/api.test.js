@@ -2,33 +2,40 @@ const request = require('request');
 const { expect } = require('chai');
 const app = require('./api');
 
+describe('Index page', () => {
+  const serverUrl = 'http://localhost:7865';
 
-describe('API integration tests', () => {
-  const API_URL = 'http://localhost:7865';
-  describe('Index page', () => {
-    it('GET / returns correct response', (done) => {
-      request.get(`${API_URL}/`, (_err, res, body) => {
-        expect(res.statusCode).to.be.equal(200);
-        expect(body).to.be.equal('Welcome to the payment system');
-        done();
-      });
+  it('should return status 200', (done) => {
+    request.get(serverUrl, (error, response, body) => {
+      expect(response.statusCode).to.equal(200);
+      done();
     });
   });
 
-  describe('Cart page', () => {
-    it('GET /cart/:id returns correct response when id is a number', (done) => {
-      request.get(`${API_URL}/cart/12`, (_err, res, body) => {
-        expect(res.statusCode).to.be.equal(200);
-        expect(body).to.be.equal('Payment methods for cart 12');
-        done();
-      });
+  it('should return the correct message', (done) => {
+    request.get(serverUrl, (error, response, body) => {
+      expect(body).to.equal('Welcome to the payment system');
+      done();
     });
+  });
+});
 
-    it('GET /cart/:id returns 404 when id is NOT a number', (done) => {
-      request.get(`${API_URL}/cart/hello`, (_err, res) => {
-        expect(res.statusCode).to.be.equal(404);
-        done();
-      });
+describe('Cart page', () => {
+  const cartUrl = 'http://localhost:7865/cart/';
+
+  it('should return status 200 for a valid cart ID', (done) => {
+    request.get(`${cartUrl}12`, (error, response, body) => {
+      expect(response.statusCode).to.equal(200);
+      expect(body).to.equal('Payment methods for cart 12');
+      done();
+    });
+  });
+
+  it('should return status 404 for an invalid cart ID', (done) => {
+    request.get(`${cartUrl}hello`, (error, response, body) => {
+      expect(response.statusCode).to.equal(404);
+      expect(body).to.equal('Not Found');
+      done();
     });
   });
 });
