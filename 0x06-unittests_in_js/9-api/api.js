@@ -14,8 +14,10 @@ app.use((req, res) => {
   res.status(404).send('Not Found');
 });
 
-app.listen(7865, () => {
-  console.log('API available on localhost port 7865');
-});
+if (require.main === module) {
+  app.listen(7865, () => {
+    console.log(`API available on localhost port 7865`);
+  });
+}
 
 module.exports = app;
