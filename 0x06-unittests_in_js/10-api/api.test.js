@@ -1,60 +1,70 @@
 const request = require('request');
+const { expect } = require('chai');
+const app = require('./api');
 
-const serverUrl = 'http://localhost:7865';
+describe('Index page', () => {
+  const serverUrl = 'http://localhost:7865';
 
-describe('Cart Page Endpoints', () => {
-  it('should return payment methods for a valid cart ID', (done) => {
-    request.get(`${serverUrl}/cart/12`, (error, response, body) => {
-      expect(response.statusCode).toEqual(200);
-      expect(body).toEqual('Payment methods for cart 12');
+  it('should return status 200', (done) => {
+    request.get(serverUrl, (error, response, body) => {
+      expect(response.statusCode).to.equal(200);
       done();
     });
   });
 
-  it('should return 404 for an invalid cart ID (non-number)', (done) => {
-    request.get(`${serverUrl}/cart/hello`, (error, response, body) => {
-      expect(response.statusCode).toEqual(404);
-      expect(body).toContain('Invalid cart id. Cart id must be a number.');
+  it('should return the correct message', (done) => {
+    request.get(serverUrl, (error, response, body) => {
+      expect(body).to.equal('Welcome to the payment system');
       done();
     });
   });
 });
 
-describe('Available Payments Endpoint', () => {
-  it('should return available payment methods', (done) => {
-    request.get(`${serverUrl}/available_payments`, (error, response, body) => {
-      expect(response.statusCode).toEqual(200);
-      expect(JSON.parse(body)).toEqual({
+describe('Cart page', () => {
+  const cartUrl = 'http://localhost:7865/cart/';
+
+  it('should return status 200 for a valid cart ID', (done) => {
+    request.get(`${cartUrl}12`, (error, response, body) => {
+      expect(response.statusCode).to.equal(200);
+      expect(body).to.equal('Payment methods for cart 12');
+      done();
+    });
+  });
+
+  it('should return status 404 for an invalid cart ID', (done) => {
+    request.get(`${cartUrl}hello`, (error, response, body) => {
+      expect(response.statusCode).to.equal(404);
+      expect(body).to.equal('Not Found');
+      done();
+    });
+  });
+});
+
+describe('Available Payments', () => {
+  it('should return the correct payment methods', (done) => {
+    request.get('http://localhost:7865/available_payments', (error, response, body) => {
+      expect(response.statusCode).to.equal(200);
+      const paymentMethods = JSON.parse(body);
+      expect(paymentMethods).to.deep.equal({
         payment_methods: {
           credit_cards: true,
-          paypal: false,
-        },
+          paypal: false
+        }
       });
       done();
     });
   });
 });
 
-describe('Login Endpoint', () => {
-  it('should return welcome message with username', (done) => {
+describe('Login', () => {
+  it('should return the welcome message', (done) => {
     request.post({
-      url: `${serverUrl}/login`,
+      url: 'http://localhost:7865/login',
       json: { userName: 'Betty' }
     }, (error, response, body) => {
-      expect(response.statusCode).toEqual(200);
-      expect(body).toEqual('Welcome Betty');
+      expect(response.statusCode).to.equal(200);
+      expect(body).to.equal('Welcome Betty');
       done();
     });
   });
 });
-
-if (require.main === module) {
-  (async () => {
-    try {
-      await Promise.resolve();
-      console.log('Running tests...');
-    } catch (error) {
-      console.error('Error running tests:', error);
-    }
-  })();
-}
