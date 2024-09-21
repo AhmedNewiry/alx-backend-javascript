@@ -1,8 +1,13 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const app = express();
 const port = 7865;
 
-app.use(express.json());
+app.use(bodyParser.json());
+
+app.get('/', (req, res) => {
+  res.send('Welcome to the payment system');
+});
 
 app.get('/cart/:id(\\d+)', (req, res) => {
   const cartId = req.params.id;
@@ -10,21 +15,21 @@ app.get('/cart/:id(\\d+)', (req, res) => {
 });
 
 app.get('/cart/:id', (req, res) => {
-  res.status(404).send('Invalid cart id. Cart id must be a number.');
+  res.status(404).send('Not Found');
 });
 
 app.get('/available_payments', (req, res) => {
   res.json({
     payment_methods: {
       credit_cards: true,
-      paypal: false,
-    },
+      paypal: false
+    }
   });
 });
 
 app.post('/login', (req, res) => {
-  const { userName } = req.body;
-  res.send(`Welcome ${userName}`);
+  const username = req.body.userName;
+  res.send(`Welcome ${username}`);
 });
 
 if (require.main === module) {
